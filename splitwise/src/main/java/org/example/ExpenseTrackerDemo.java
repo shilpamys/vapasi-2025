@@ -13,7 +13,7 @@ public class ExpenseTrackerDemo {
 
     private static final Logger LOGGER = Logger.getLogger(ExpenseTrackerDemo.class.getName());
 
-    private static final String INPUT_FILE_PATH = "/Users/shilpad/IdeaProjects/Splitwise1/src/main/resources/input.txt";
+    private static final String INPUT_FILE_PATH = "/Users/shilpad/IdeaProjects/vapasi-2025/splitwise/src/main/resources/input.txt";
 
     public static void main(String[] args) {
 
@@ -32,14 +32,14 @@ public class ExpenseTrackerDemo {
 
                     String[] parts = line.split(" spent ");
                     if (parts.length != 2) {
-                        LOGGER.info("Skipping malformed line (missing 'spent'): " + line);
+                        LOGGER.info("missing 'spent'): " + line);
                         continue;
                     }
                     String payerName = parts[0].trim();
 
                     String[] amountAndRest = parts[1].split(" for ", 2);
                     if (amountAndRest.length != 2) {
-                        LOGGER.info("Skipping malformed line (missing first 'for'): " + line);
+                        LOGGER.info("missing first 'for'): " + line);
                         continue;
                     }
 
@@ -75,7 +75,7 @@ public class ExpenseTrackerDemo {
                     new Expense(description, payer, amount, beneficiaryList, ledger);
 
                 } catch (Exception e) {
-                    LOGGER.info("Error parsing line: " + line);
+                    LOGGER.info("Error in parsing line: " + line);
                     LOGGER.info("Error reading input file: " + e.getMessage());
                 }
             }
@@ -85,7 +85,7 @@ public class ExpenseTrackerDemo {
             return;
         }
 
-        System.out.println("\nAfter consolidating debts:");
+        System.out.println("\n Consolidating debts:");
         ledger.printLedger();
     }
 }

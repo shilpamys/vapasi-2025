@@ -28,53 +28,44 @@ public class ExpenseTrackerTest {
 
     @Test
     void testSelfExpense() {
-        // Create person
+
         Person payer = personMap.computeIfAbsent("A", Person::new);
 
-        // Create expense
         new Expense("Snacks", payer, 25.0, List.of(payer), tracker);
 
-        // Verify no debts
         Map<Person, Map<Person, Double>> debts = tracker.getDebts();
         assertTrue(debts.isEmpty(), "Expected no debts for self-expense");
     }
 
     @Test
     void testDecimalAmount() {
-        // Create persons
         Person payer = personMap.computeIfAbsent("A", Person::new);
         Person b = personMap.computeIfAbsent("B", Person::new);
         Person c = personMap.computeIfAbsent("C", Person::new);
 
-        // Create expense
+
         new Expense("Snacks", payer, 12.70, List.of(b, c), tracker);
 
-        // Verify debts
         Map<Person, Map<Person, Double>> debts = tracker.getDebts();
         double expectedAmount = 12.70 / 2;
 
-        // Check B's debt
         Map<Person, Double> bDebts = debts.get(b);
         assertTrue(bDebts != null && bDebts.containsKey(payer), "B should owe A");
-        assertEquals(expectedAmount, Math.abs(bDebts.get(payer)), 0.001, "B owes incorrect amount");
+        assertEquals(expectedAmount, Math.abs(bDebts.get(payer)), 0.001, "B pays incorrect amount");
 
-        // Check C's debt
         Map<Person, Double> cDebts = debts.get(c);
         assertTrue(cDebts != null && cDebts.containsKey(payer), "C should owe A");
-        assertEquals(expectedAmount, Math.abs(cDebts.get(payer)), 0.001, "C owes incorrect amount");
+        assertEquals(expectedAmount, Math.abs(cDebts.get(payer)), 0.001, "C pays incorrect amount");
     }
 
     @Test
     void testZeroAmount() {
-        // Create persons
         Person payer = personMap.computeIfAbsent("A", Person::new);
         Person b = personMap.computeIfAbsent("B", Person::new);
         Person c = personMap.computeIfAbsent("C", Person::new);
 
-        // Create expense
         new Expense("Snacks", payer, 0.0, List.of(b, c), tracker);
 
-        // Verify no debts
         Map<Person, Map<Person, Double>> debts = tracker.getDebts();
         assertFalse(debts.isEmpty(), "Expected no debts for zero amount");
     }
@@ -107,18 +98,15 @@ public class ExpenseTrackerTest {
             beneficiaries.add(personMap.computeIfAbsent(String.valueOf(c), Person::new));
         }
 
-        // Create expense
         new Expense("Snacks", payer, 2000.0, beneficiaries, tracker);
 
-        // Verify debts
         Map<Person, Map<Person, Double>> debts = tracker.getDebts();
         double expectedAmount = 2000.0 / beneficiaries.size();
 
-        // Check each beneficiary's debt
         for (Person beneficiary : beneficiaries) {
             Map<Person, Double> personDebts = debts.get(beneficiary);
             assertTrue(personDebts != null && personDebts.containsKey(payer),
-                    "Expected beneficiary " + beneficiary.getName() + " to owe A");
+                    "Expected beneficiary " + beneficiary.getName() + " to pay A");
             assertEquals(expectedAmount, Math.abs(personDebts.get(payer)), 0.001,
                     "Expected correct amount for beneficiary " + beneficiary.getName());
         }
